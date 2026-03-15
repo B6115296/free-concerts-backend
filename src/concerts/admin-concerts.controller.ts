@@ -16,6 +16,11 @@ export class AdminConcertsController {
     return this.concertsService.findAllConcertsAdmin();
   }
 
+  @Get('seats-summary')
+  getSeatsSummary() {
+    return this.concertsService.getSeatsSummary();
+  }
+
   @Delete(':id')
   removeConcert(@Param('id') id: string) {
     return this.concertsService.remove(id);

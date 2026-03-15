@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { Reservation, ReservationStatus } from './entities/reservation.entity';
 import { Concert } from '../concerts/entities/concert.entity';
 import { User } from '../user/entities/user.entity';
+import { ReservationHistory } from '../reservation-history/entities/reservation-history.entity';
 
 @Injectable()
 export class ReservationsService {
@@ -17,6 +18,8 @@ export class ReservationsService {
     private concertRepository: Repository<Concert>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(ReservationHistory)
+    private reservationHistoryRepository: Repository<ReservationHistory>,
   ) { }
 
   async create(dto: CreateReservationDto) {
@@ -59,8 +62,16 @@ export class ReservationsService {
       await this.concertRepository.save(concert);
 
       existing.status = ReservationStatus.RESERVED;
+      const savedReservation = await this.reservationRepository.save(existing);
 
-      return this.reservationRepository.save(existing);
+      // Create history entry
+      await this.reservationHistoryRepository.save({
+        user,
+        reservation: savedReservation,
+        action: 'RESERVED'
+      });
+
+      return savedReservation;
     }
 
     if (concert.availableSeats <= 0) {
@@ -75,14 +86,23 @@ export class ReservationsService {
       concert
     });
 
-    return this.reservationRepository.save(reservation);
+    const savedReservation = await this.reservationRepository.save(reservation);
+
+    // Create history entry
+    await this.reservationHistoryRepository.save({
+      user,
+      reservation: savedReservation,
+      action: 'RESERVED'
+    });
+
+    return savedReservation;
   }
 
   async cancel(reservationId: string) {
 
     const reservation = await this.reservationRepository.findOne({
       where: { id: reservationId },
-      relations: ['concert']
+      relations: ['concert', 'user']
     });
 
     if (!reservation) {
@@ -102,6 +122,15 @@ export class ReservationsService {
 
     await this.concertRepository.save(concert);
 
-    return this.reservationRepository.save(reservation);
+    const savedReservation = await this.reservationRepository.save(reservation);
+
+    // Create history entry
+    await this.reservationHistoryRepository.save({
+      user: reservation.user,
+      reservation: savedReservation,
+      action: 'CANCELLED'
+    });
+
+    return savedReservation;
   }
 }
