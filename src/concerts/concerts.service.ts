@@ -50,7 +50,11 @@ export class ConcertsService {
     }));
   }
 
-  remove(id: number) {
-    return this.concertRepository.delete(id.toString());
+  async remove(id: string) {
+    await this.reservationRepository.delete({
+      concert: { id }
+    });
+    
+    return this.concertRepository.delete(id);
   }
 }

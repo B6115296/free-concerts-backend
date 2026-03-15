@@ -18,6 +18,6 @@ export class AdminConcertsController {
 
   @Delete(':id')
   removeConcert(@Param('id') id: string) {
-    return this.concertsService.remove(+id);
+    return this.concertsService.remove(id);
   }
 }
