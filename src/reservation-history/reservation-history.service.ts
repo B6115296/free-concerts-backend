@@ -20,7 +20,7 @@ export class ReservationHistoryService {
     reservationId: r.reservation.id,
     username: r.user.name,
     concertName: r.reservation.concert.name,
-    status: r.action,
+    status: r.action === 'CANCELLED' ? 'Cancel' : 'Reserve',
     createdAt: r.createdAt
   }));
 }
