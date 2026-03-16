@@ -30,12 +30,20 @@ export class ConcertsService {
   }
 
   async findAllConcertsAdmin() {
-    return this.concertRepository.find();
+    return this.concertRepository.find({
+      order: {
+        createdAt: "DESC",
+      },
+    });
   }
 
   async findAllConcertsUser(userId: string) {
 
-    const concerts = await this.concertRepository.find();
+    const concerts = await this.concertRepository.find({
+    order: {
+      createdAt: "DESC",
+    },
+  });
 
     const reservations = await this.reservationRepository.find({
       where: {
@@ -59,7 +67,7 @@ export class ConcertsService {
 
   async getSeatsSummary() {
     const concerts = await this.concertRepository.find();
-    
+
     // Get all reservation history for all concerts
     const allHistory = await this.reservationHistoryRepository.find({
       relations: ['reservation', 'reservation.concert']
@@ -74,7 +82,7 @@ export class ConcertsService {
     ).length;
 
     const totalSeats = concerts.reduce(
-      (sum, concert) => sum + concert.totalSeats, 
+      (sum, concert) => sum + concert.totalSeats,
       0
     );
 
@@ -89,7 +97,7 @@ export class ConcertsService {
     await this.reservationRepository.delete({
       concert: { id }
     });
-    
+
     return this.concertRepository.delete(id);
   }
 }
