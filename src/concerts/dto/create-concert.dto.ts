@@ -1,12 +1,16 @@
-import { IsInt, IsString } from "class-validator";
+import { IsInt, IsString, IsNotEmpty, Min } from "class-validator";
 
 export class CreateConcertDto {
-    @IsString()
+    @IsNotEmpty({ message: 'Name is required' })
+    @IsString({ message: 'Name must be a string' })
     name: string;
 
-    @IsString()
+    @IsNotEmpty({ message: 'Description is required' })
+    @IsString({ message: 'Description must be a string' })
     description: string;
 
-    @IsInt()
+    @IsNotEmpty({ message: 'Total seats is required' })
+    @IsInt({ message: 'Total seats must be a number' })
+    @Min(1, { message: 'Total seats must be at least 1' })
     totalSeats: number;
 }
