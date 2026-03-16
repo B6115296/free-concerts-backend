@@ -1,3 +1,6 @@
+# Free Concerts App
+run with docker follow by folder run_with_docker
+
 # Free Concerts Backend
 
 A NestJS-based REST API for managing concert reservations, built with TypeScript, TypeORM, and PostgreSQL.
