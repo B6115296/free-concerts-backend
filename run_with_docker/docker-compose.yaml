@@ -1,0 +1,70 @@
+version: "3.8"
+
+services:
+
+  postgres:
+    image: postgres:15
+    container_name: concerts_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: concerts
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - concerts_network
+
+  backend:
+    build:
+      context: ./free-concerts-backend
+      dockerfile: Dockerfile
+    container_name: concerts_backend
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_NAME: concerts
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./free-concerts-backend:/app
+      - /app/node_modules
+    command: sh -c "npm install && npm run migration:run && npm run start:dev"
+    networks:
+      - concerts_network
+
+  frontend:
+    build:
+      context: ./free-concerts-frontend
+      dockerfile: Dockerfile
+    container_name: concerts_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./free-concerts-frontend:/app
+      - /app/node_modules
+      - next_cache:/app/.next
+    command: sh -c "npm install && npm run dev"
+    networks:
+      - concerts_network
+
+volumes:
+  postgres_data:
+  next_cache:
+
+networks:
+  concerts_network:
+    driver: bridge
