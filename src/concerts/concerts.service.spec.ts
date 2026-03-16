@@ -5,7 +5,7 @@ import { Concert } from './entities/concert.entity';
 import { Reservation } from '../reservations/entities/reservation.entity';
 import { ReservationHistory } from '../reservation-history/entities/reservation-history.entity';
 import { Repository } from 'typeorm';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { ReservationStatus } from '../reservations/entities/reservation.entity';
 
 describe('ConcertsService', () => {
   let service: ConcertsService;
@@ -123,7 +123,7 @@ describe('ConcertsService', () => {
           id: 'reservation-1',
           user: { id: userId },
           concert: { id: 'concert-1' },
-          status: 'RESERVED',
+          status: ReservationStatus.RESERVED,
         },
       ];
 

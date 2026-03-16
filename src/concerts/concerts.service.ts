@@ -32,7 +32,7 @@ export class ConcertsService {
   async findAllConcertsAdmin() {
     return this.concertRepository.find({
       order: {
-        createdAt: "DESC",
+        createdAt: "ASC",
       },
     });
   }
@@ -41,7 +41,7 @@ export class ConcertsService {
 
     const concerts = await this.concertRepository.find({
       order: {
-        createdAt: "DESC",
+        name: "ASC",
       },
     });
 
