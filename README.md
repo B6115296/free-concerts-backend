@@ -36,11 +36,12 @@ npm install
 Create a `.env` file in the root directory:
 ```env
 # Database Configuration
-DB_HOST=localhost
-DB_PORT=5432
-DB_USERNAME=postgres
-DB_PASSWORD=postgres
-DB_DATABASE=free_concerts
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_USER=postgres
+DATABASE_PASSWORD=postgres
+DATABASE_NAME=concerts
+TYPEORM_SYNC=false
 
 # Application Configuration
 PORT=3001
