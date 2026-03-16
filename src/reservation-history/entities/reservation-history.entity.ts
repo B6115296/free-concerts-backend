@@ -2,6 +2,11 @@ import { Reservation } from "../../reservations/entities/reservation.entity";
 import { User } from "../../user/entities/user.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
+export enum ReservationHistoryAction {
+    RESERVED = 'RESERVED',
+    CANCELLED = 'CANCELLED',
+}
+
 @Entity()
 export class ReservationHistory {
 
@@ -11,14 +16,16 @@ export class ReservationHistory {
     @ManyToOne(() => User)
     user: User;
 
-    @ManyToOne(() => Reservation)
+    @ManyToOne(() => Reservation, (reservation) => reservation, {
+        onDelete: "CASCADE",
+    })
     reservation: Reservation;
 
     @Column({
         type: 'enum',
-        enum: ['RESERVED', 'CANCELLED']
+        enum: ReservationHistoryAction
     })
-    action: string;
+    action: ReservationHistoryAction;
 
     @CreateDateColumn()
     createdAt: Date;

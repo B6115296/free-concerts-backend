@@ -40,10 +40,10 @@ export class ConcertsService {
   async findAllConcertsUser(userId: string) {
 
     const concerts = await this.concertRepository.find({
-    order: {
-      createdAt: "DESC",
-    },
-  });
+      order: {
+        createdAt: "DESC",
+      },
+    });
 
     const reservations = await this.reservationRepository.find({
       where: {
@@ -94,10 +94,6 @@ export class ConcertsService {
   }
 
   async remove(id: string) {
-    await this.reservationRepository.delete({
-      concert: { id }
-    });
-
     return this.concertRepository.delete(id);
   }
 }

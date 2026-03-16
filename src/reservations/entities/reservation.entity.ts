@@ -17,7 +17,9 @@ export class Reservation {
   @ManyToOne(() => User, user => user.reservations)
   user: User;
 
-  @ManyToOne(() => Concert, concert => concert.reservations)
+  @ManyToOne(() => Concert, (concert) => concert.reservations, {
+    onDelete: "CASCADE",
+  })
   concert: Concert;
 
   @Column({

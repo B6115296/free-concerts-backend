@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { Reservation, ReservationStatus } from './entities/reservation.entity';
 import { Concert } from '../concerts/entities/concert.entity';
 import { User } from '../user/entities/user.entity';
-import { ReservationHistory } from '../reservation-history/entities/reservation-history.entity';
+import { ReservationHistory, ReservationHistoryAction } from '../reservation-history/entities/reservation-history.entity';
 
 @Injectable()
 export class ReservationsService {
@@ -68,7 +68,7 @@ export class ReservationsService {
       await this.reservationHistoryRepository.save({
         user,
         reservation: savedReservation,
-        action: 'RESERVED'
+        action: ReservationHistoryAction.RESERVED
       });
 
       return savedReservation;
@@ -92,7 +92,7 @@ export class ReservationsService {
     await this.reservationHistoryRepository.save({
       user,
       reservation: savedReservation,
-      action: 'RESERVED'
+      action: ReservationHistoryAction.RESERVED
     });
 
     return savedReservation;
@@ -128,7 +128,7 @@ export class ReservationsService {
     await this.reservationHistoryRepository.save({
       user: reservation.user,
       reservation: savedReservation,
-      action: 'CANCELLED'
+      action: ReservationHistoryAction.CANCELLED
     });
 
     return savedReservation;
