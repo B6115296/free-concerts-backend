@@ -17,6 +17,7 @@ export class ReservationHistoryService {
   });
 
   return reservations.map(r => ({
+    id: r.id,
     reservationId: r.reservation.id,
     username: r.user.name,
     concertName: r.reservation.concert.name,

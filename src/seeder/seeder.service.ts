@@ -2,12 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Concert } from '../concerts/entities/concert.entity';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class SeederService {
   constructor(
     @InjectRepository(Concert)
     private concertRepository: Repository<Concert>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {}
 
   async seedConcerts() {
@@ -55,5 +58,31 @@ export class SeederService {
     }
 
     console.log('Database seeded with default concerts');
+  }
+
+  async seedUsers() {
+    const existingUsers = await this.userRepository.count();
+    if (existingUsers > 0) {
+      return; // Already seeded
+    }
+
+    const defaultUsers = [
+      {
+        name: 'John Doe',
+        email: 'john.doe@example.com',
+      },
+    ];
+
+    for (const userData of defaultUsers) {
+      const user = this.userRepository.create(userData);
+      await this.userRepository.save(user);
+    }
+
+    console.log('Database seeded with default users');
+  }
+
+  async seedAll() {
+    await this.seedUsers();
+    await this.seedConcerts();
   }
 }
